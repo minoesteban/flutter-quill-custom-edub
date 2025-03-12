@@ -61,6 +61,7 @@ class RawEditor extends StatefulWidget {
     this.scrollPhysics,
     this.embedBuilder,
     this.customStyleBuilder,
+    this.overlays,
   )   : assert(maxHeight == null || maxHeight > 0, 'maxHeight cannot be null'),
         assert(minHeight == null || minHeight >= 0, 'minHeight cannot be null'),
         assert(maxHeight == null || minHeight == null || maxHeight >= minHeight,
@@ -96,6 +97,7 @@ class RawEditor extends StatefulWidget {
   final ScrollPhysics? scrollPhysics;
   final EmbedBuilder embedBuilder;
   final CustomStyleBuilder? customStyleBuilder;
+  final List<Positioned> overlays;
 
   @override
   State<StatefulWidget> createState() => RawEditorState();
@@ -109,7 +111,7 @@ class RawEditorState extends EditorState
         RawEditorStateKeyboardMixin,
         RawEditorStateTextInputClientMixin,
         RawEditorStateSelectionDelegateMixin {
-  final GlobalKey _editorKey = GlobalKey();
+  // final GlobalKey _editorKey = GlobalKey();
 
   // Keyboard
   late KeyboardEventHandler _keyboardListener;
@@ -159,7 +161,7 @@ class RawEditorState extends EditorState
       link: _toolbarLayerLink,
       child: Semantics(
         child: _Editor(
-          key: _editorKey,
+          key: widget.controller.editorKey,
           document: _doc,
           selection: widget.controller.selection,
           hasFocus: _hasFocus,
@@ -175,7 +177,9 @@ class RawEditorState extends EditorState
     );
 
     if (widget.scrollable) {
-      _scrollToSelection();
+      if (!widget.controller.disableHighlightScrolling) {
+        _scrollToSelection();
+      }
       final baselinePadding =
           EdgeInsets.only(top: _styles!.paragraph!.verticalSpacing.item1);
       child = BaselineProxy(
@@ -186,19 +190,27 @@ class RawEditorState extends EditorState
           physics: widget.scrollPhysics,
           viewportBuilder: (_, offset) => CompositedTransformTarget(
             link: _toolbarLayerLink,
-            child: _Editor(
-              key: _editorKey,
-              offset: offset,
-              document: widget.controller.document,
-              selection: widget.controller.selection,
-              hasFocus: _hasFocus,
-              textDirection: _textDirection,
-              startHandleLayerLink: _startHandleLayerLink,
-              endHandleLayerLink: _endHandleLayerLink,
-              onSelectionChanged: _handleSelectionChanged,
-              scrollBottomInset: widget.scrollBottomInset,
-              padding: widget.padding,
-              children: _buildChildren(_doc, context),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: _Editor(
+                    key: widget.controller.editorKey,
+                    offset: offset,
+                    document: widget.controller.document,
+                    selection: widget.controller.selection,
+                    hasFocus: _hasFocus,
+                    textDirection: _textDirection,
+                    startHandleLayerLink: _startHandleLayerLink,
+                    endHandleLayerLink: _endHandleLayerLink,
+                    onSelectionChanged: _handleSelectionChanged,
+                    scrollBottomInset: widget.scrollBottomInset,
+                    padding: widget.padding,
+                    children: _buildChildren(_doc, context),
+                  ),
+                ),
+                ...widget.overlays,
+              ],
             ),
           ),
         ),
@@ -454,8 +466,9 @@ class RawEditorState extends EditorState
   }
 
   bool _shouldShowSelectionHandles() {
-    return widget.showSelectionHandles &&
-        !widget.controller.selection.isCollapsed;
+    return true;
+    // return widget.showSelectionHandles &&
+    //     !widget.controller.selection.isCollapsed;
   }
 
   @override
@@ -661,7 +674,8 @@ class RawEditorState extends EditorState
 
   @override
   RenderEditor? getRenderEditor() {
-    return _editorKey.currentContext?.findRenderObject() as RenderEditor?;
+    return widget.controller.editorKey.currentContext?.findRenderObject()
+        as RenderEditor?;
   }
 
   @override
@@ -762,6 +776,47 @@ class RawEditorState extends EditorState
 
   @override
   bool get wantKeepAlive => widget.focusNode.hasFocus;
+
+  @override
+  void copySelection(SelectionChangedCause cause) {
+    // TODO: implement copySelection
+  }
+
+  @override
+  void cutSelection(SelectionChangedCause cause) {
+    // TODO: implement cutSelection
+  }
+
+  @override
+  Future<void> pasteText(SelectionChangedCause cause) {
+    // TODO: implement pasteText
+    throw UnimplementedError();
+  }
+
+  @override
+  void selectAll(SelectionChangedCause cause) {
+    // TODO: implement selectAll
+  }
+
+  @override
+  void insertTextPlaceholder(Size size) {
+    // TODO: implement insertTextPlaceholder
+  }
+
+  @override
+  void removeTextPlaceholder() {
+    // TODO: implement removeTextPlaceholder
+  }
+
+  @override
+  void didChangeInputControl(TextInputControl? oldControl, TextInputControl? newControl) {
+    // TODO: implement didChangeInputControl
+  }
+
+  @override
+  void performSelector(String selectorName) {
+    // TODO: implement performSelector
+  }
 }
 
 class _Editor extends MultiChildRenderObjectWidget {

@@ -25,6 +25,9 @@ class QuillController extends ChangeNotifier {
     );
   }
 
+  /// Access to current Editor
+  final GlobalKey editorKey = GlobalKey();
+
   /// Document managed by this controller.
   final Document document;
 
@@ -35,6 +38,9 @@ class QuillController extends ChangeNotifier {
   /// Currently selected text within the [document].
   TextSelection get selection => _selection;
   TextSelection _selection;
+
+  /// Handle highlight scrolling after the editor is rendered
+  bool disableHighlightScrolling = false;
 
   /// Store any styles attribute that got toggled by the tap of a button
   /// and that has not been applied yet.

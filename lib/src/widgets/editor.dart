@@ -254,6 +254,7 @@ class QuillEditor extends StatefulWidget {
       this.onSingleLongTapEnd,
       this.embedBuilder = _defaultEmbedBuilder,
       this.customStyleBuilder,
+      this.overlays = const [],
       Key? key});
 
   factory QuillEditor.basic({
@@ -295,6 +296,7 @@ class QuillEditor extends StatefulWidget {
   final Brightness keyboardAppearance;
   final ScrollPhysics? scrollPhysics;
   final ValueChanged<String>? onLaunchUrl;
+  final List<Positioned> overlays;
 
   // Returns whether gesture is handled
   final bool Function(
@@ -426,6 +428,7 @@ class _QuillEditorState extends State<QuillEditor>
         widget.scrollPhysics,
         widget.embedBuilder,
         widget.customStyleBuilder,
+        widget.overlays,
       ),
     );
   }
@@ -750,6 +753,14 @@ class RenderEditor extends RenderEditableContainerBox
     return boxParentData.offset + localOffsetForCaret;
   }
 
+  Offset getOffsetForTextPosition(TextPosition position) {
+    final child = childAtPosition(position);
+    final childPosition = child.globalToLocalPosition(position);
+    final boxParentData = child.parentData as BoxParentData;
+    final localOffsetForCaret = child.getOffsetForCaret(childPosition);
+    return boxParentData.offset + localOffsetForCaret;
+  }
+
   void setDocument(Document doc) {
     if (document == doc) {
       return;
@@ -964,6 +975,29 @@ class RenderEditor extends RenderEditableContainerBox
     _handleSelectionChange(newSelection, cause);
   }
 
+  void selectLocalPositionAt(
+      Offset from,
+      Offset? to,
+      SelectionChangedCause cause,
+      ) {
+    final fromPosition = getPositionForOffset(from);
+    final toPosition = to == null ? null : getPositionForOffset(to);
+
+    var baseOffset = fromPosition.offset;
+    var extentOffset = fromPosition.offset;
+    if (toPosition != null) {
+      baseOffset = math.min(fromPosition.offset, toPosition.offset);
+      extentOffset = math.max(fromPosition.offset, toPosition.offset);
+    }
+
+    final newSelection = TextSelection(
+      baseOffset: baseOffset,
+      extentOffset: extentOffset,
+      affinity: fromPosition.affinity,
+    );
+    _handleSelectionChange(newSelection, cause);
+  }
+
   @override
   void selectWord(SelectionChangedCause cause) {
     selectWordsInRange(_lastTapDownPosition!, null, cause);
@@ -1097,7 +1131,7 @@ class RenderEditor extends RenderEditableContainerBox
     final caretTop = endpoint.point.dy -
         child.preferredLineHeight(TextPosition(
             offset:
-            selection.extentOffset - child.getContainer().documentOffset)) -
+                selection.extentOffset - child.getContainer().documentOffset)) -
         kMargin +
         offsetInViewport +
         scrollBottomInset;
