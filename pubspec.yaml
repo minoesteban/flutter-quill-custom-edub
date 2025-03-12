@@ -24,8 +24,7 @@ dependencies:
   tuple: ^2.0.0
   url_launcher: ^6.0.2
   pedantic: ^1.11.0
-#  video_player: ^2.1.10
-  video_player: 2.7.2
+  video_player: ^2.9.3
   characters: ^1.1.0
   youtube_player_flutter_quill:
     git:
