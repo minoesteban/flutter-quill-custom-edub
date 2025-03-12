@@ -47,8 +47,7 @@ class QuillSingleChildScrollView extends StatelessWidget {
   final ViewportBuilder viewportBuilder;
 
   AxisDirection _getDirection(BuildContext context) {
-    return getAxisDirectionFromAxisReverseAndDirectionality(
-        context, Axis.vertical, false);
+    return getAxisDirectionFromAxisReverseAndDirectionality(context, Axis.vertical, false);
   }
 
   @override
@@ -61,10 +60,7 @@ class QuillSingleChildScrollView extends StatelessWidget {
       physics: physics,
       restorationId: restorationId,
       viewportBuilder: (context, offset) {
-        return _SingleChildViewport(
-          offset: offset,
-          child: viewportBuilder(context, offset),
-        );
+        return _SingleChildViewport(offset: offset, child: viewportBuilder(context, offset));
       },
     );
     return scrollable;
@@ -72,24 +68,17 @@ class QuillSingleChildScrollView extends StatelessWidget {
 }
 
 class _SingleChildViewport extends SingleChildRenderObjectWidget {
-  const _SingleChildViewport({
-    required this.offset,
-    Key? key,
-    Widget? child,
-  }) : super(key: key, child: child);
+  const _SingleChildViewport({required this.offset, Key? key, Widget? child}) : super(key: key, child: child);
 
   final ViewportOffset offset;
 
   @override
   _RenderSingleChildViewport createRenderObject(BuildContext context) {
-    return _RenderSingleChildViewport(
-      offset: offset,
-    );
+    return _RenderSingleChildViewport(offset: offset);
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, _RenderSingleChildViewport renderObject) {
+  void updateRenderObject(BuildContext context, _RenderSingleChildViewport renderObject) {
     // Order dependency: The offset setter reads the axis direction.
     renderObject.offset = offset;
   }
@@ -102,8 +91,8 @@ class _RenderSingleChildViewport extends RenderBox
     required ViewportOffset offset,
     double cacheExtent = RenderAbstractViewport.defaultCacheExtent,
     RenderBox? child,
-  })  : _offset = offset,
-        _cacheExtent = cacheExtent {
+  }) : _offset = offset,
+       _cacheExtent = cacheExtent {
     this.child = child;
   }
 
@@ -298,8 +287,12 @@ class _RenderSingleChildViewport extends RenderBox
   }
 
   @override
-  RevealedOffset getOffsetToReveal(RenderObject target, double alignment,
-      {Rect? rect}) {
+  RevealedOffset getOffsetToReveal(
+    RenderObject target,
+    double alignment, {
+    Rect? rect,
+    Axis? axis, // Unused, only Axis.vertical supported by this viewport.
+  }) {
     rect ??= target.paintBounds;
     if (target is! RenderBox) {
       return RevealedOffset(offset: offset.pixels, rect: rect);
@@ -317,8 +310,7 @@ class _RenderSingleChildViewport extends RenderBox
     leadingScrollOffset = bounds.top;
     targetMainAxisExtent = bounds.height;
 
-    final targetOffset = leadingScrollOffset -
-        (mainAxisExtent - targetMainAxisExtent) * alignment;
+    final targetOffset = leadingScrollOffset - (mainAxisExtent - targetMainAxisExtent) * alignment;
     final targetRect = bounds.shift(_paintOffsetForPosition(targetOffset));
     return RevealedOffset(offset: targetOffset, rect: targetRect);
   }
@@ -331,12 +323,7 @@ class _RenderSingleChildViewport extends RenderBox
     Curve curve = Curves.ease,
   }) {
     if (!offset.allowImplicitScrolling) {
-      return super.showOnScreen(
-        descendant: descendant,
-        rect: rect,
-        duration: duration,
-        curve: curve,
-      );
+      return super.showOnScreen(descendant: descendant, rect: rect, duration: duration, curve: curve);
     }
 
     final newRect = RenderViewportBase.showInViewport(
@@ -347,11 +334,7 @@ class _RenderSingleChildViewport extends RenderBox
       duration: duration,
       curve: curve,
     );
-    super.showOnScreen(
-      rect: newRect,
-      duration: duration,
-      curve: curve,
-    );
+    super.showOnScreen(rect: newRect, duration: duration, curve: curve);
   }
 
   @override

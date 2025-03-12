@@ -1,15 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import '../../flutter_quill.dart';
 
-import '../models/documents/nodes/leaf.dart';
-import 'editor.dart';
+import '../../flutter_quill.dart';
 import 'text_selection.dart';
 
-typedef EmbedBuilder = Widget Function(
-    BuildContext context, Embed node, bool readOnly);
+typedef EmbedBuilder = Widget Function(BuildContext context, Embed node, bool readOnly);
 
 typedef CustomStyleBuilder = TextStyle Function(Attribute attribute);
 
@@ -39,30 +35,20 @@ class EditorTextSelectionGestureDetectorBuilder {
     getRenderEditor()!.handleTapDown(details);
 
     final kind = details.kind;
-    shouldShowSelectionToolbar = kind == null ||
-        kind == PointerDeviceKind.touch ||
-        kind == PointerDeviceKind.stylus;
+    shouldShowSelectionToolbar = kind == null || kind == PointerDeviceKind.touch || kind == PointerDeviceKind.stylus;
   }
 
   void onForcePressStart(ForcePressDetails details) {
     assert(delegate.getForcePressEnabled());
     shouldShowSelectionToolbar = true;
     if (delegate.getSelectionEnabled()) {
-      getRenderEditor()!.selectWordsInRange(
-        details.globalPosition,
-        null,
-        SelectionChangedCause.forcePress,
-      );
+      getRenderEditor()!.selectWordsInRange(details.globalPosition, null, SelectionChangedCause.forcePress);
     }
   }
 
   void onForcePressEnd(ForcePressDetails details) {
     assert(delegate.getForcePressEnabled());
-    getRenderEditor()!.selectWordsInRange(
-      details.globalPosition,
-      null,
-      SelectionChangedCause.forcePress,
-    );
+    getRenderEditor()!.selectWordsInRange(details.globalPosition, null, SelectionChangedCause.forcePress);
     if (shouldShowSelectionToolbar) {
       getEditor()!.showToolbar();
     }
@@ -78,21 +64,13 @@ class EditorTextSelectionGestureDetectorBuilder {
 
   void onSingleLongTapStart(LongPressStartDetails details) {
     if (delegate.getSelectionEnabled()) {
-      getRenderEditor()!.selectPositionAt(
-        details.globalPosition,
-        null,
-        SelectionChangedCause.longPress,
-      );
+      getRenderEditor()!.selectPositionAt(details.globalPosition, null, SelectionChangedCause.longPress);
     }
   }
 
   void onSingleLongTapMoveUpdate(LongPressMoveUpdateDetails details) {
     if (delegate.getSelectionEnabled()) {
-      getRenderEditor()!.selectPositionAt(
-        details.globalPosition,
-        null,
-        SelectionChangedCause.longPress,
-      );
+      getRenderEditor()!.selectPositionAt(details.globalPosition, null, SelectionChangedCause.longPress);
     }
   }
 
@@ -112,20 +90,19 @@ class EditorTextSelectionGestureDetectorBuilder {
   }
 
   void onDragSelectionStart(DragStartDetails details) {
-    getRenderEditor()!.selectPositionAt(
-      details.globalPosition,
-      null,
-      SelectionChangedCause.drag,
-    );
+    getRenderEditor()!.selectPositionAt(details.globalPosition, null, SelectionChangedCause.drag);
   }
 
   void onDragSelectionUpdate(
-      DragStartDetails startDetails, DragUpdateDetails updateDetails) {
-    getRenderEditor()!.selectPositionAt(
-      startDetails.globalPosition,
-      updateDetails.globalPosition,
-      SelectionChangedCause.drag,
-    );
+    // DragStartDetails startDetails,
+    DragUpdateDetails updateDetails,
+  ) {
+    // TODO: EM - Incompatible change - need to change RenderEditor logic
+    // getRenderEditor()!.selectPositionAt(
+    //   // startDetails.globalPosition,
+    //   updateDetails.globalPosition,
+    //   SelectionChangedCause.drag,
+    // );
   }
 
   void onDragSelectionEnd(DragEndDetails details) {}
@@ -133,8 +110,7 @@ class EditorTextSelectionGestureDetectorBuilder {
   Widget build(HitTestBehavior behavior, Widget child) {
     return EditorTextSelectionGestureDetector(
       onTapDown: onTapDown,
-      onForcePressStart:
-          delegate.getForcePressEnabled() ? onForcePressStart : null,
+      onForcePressStart: delegate.getForcePressEnabled() ? onForcePressStart : null,
       onForcePressEnd: delegate.getForcePressEnabled() ? onForcePressEnd : null,
       onSingleTapUp: onSingleTapUp,
       onSingleTapCancel: onSingleTapCancel,

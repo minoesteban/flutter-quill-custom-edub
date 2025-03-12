@@ -17,7 +17,7 @@ import 'node.dart';
 ///
 /// When a line contains an embed, it fully occupies the line, no other embeds
 /// or text nodes are allowed.
-class Line extends Container<Leaf?> {
+base class Line extends Container<Leaf?> {
   @override
   Leaf get defaultChild => Text();
 
@@ -41,9 +41,7 @@ class Line extends Container<Leaf?> {
     if (parent!.isLast) {
       return null;
     }
-    return parent!.next is Block
-        ? (parent!.next as Block).first as Line?
-        : parent!.next as Line?;
+    return parent!.next is Block ? (parent!.next as Block).first as Line? : parent!.next as Line?;
   }
 
   @override
@@ -51,9 +49,7 @@ class Line extends Container<Leaf?> {
 
   @override
   Delta toDelta() {
-    final delta = children
-        .map((child) => child.toDelta())
-        .fold(Delta(), (dynamic a, b) => a.concat(b));
+    final delta = children.map((child) => child.toDelta()).fold(Delta(), (dynamic a, b) => a.concat(b));
     var attributes = style;
     if (parent is Block) {
       final block = parent as Block;
@@ -128,8 +124,10 @@ class Line extends Container<Leaf?> {
     final isLineFormat = (index + local == thisLength) && local == 1;
 
     if (isLineFormat) {
-      assert(style.values.every((attr) => attr.scope == AttributeScope.BLOCK),
-          'It is not allowed to apply inline attributes to line itself.');
+      assert(
+        style.values.every((attr) => attr.scope == AttributeScope.BLOCK),
+        'It is not allowed to apply inline attributes to line itself.',
+      );
       _format(style);
     } else {
       // Otherwise forward to children as it's an inline format update.
@@ -205,21 +203,15 @@ class Line extends Container<Leaf?> {
       // Ensure that we're only unwrapping the block only if we unset a single
       // block format in the `parentStyle` and there are no more block formats
       // left to unset.
-      if (blockStyle.value == null &&
-          parentStyle.containsKey(blockStyle.key) &&
-          parentStyle.length == 1) {
+      if (blockStyle.value == null && parentStyle.containsKey(blockStyle.key) && parentStyle.length == 1) {
         _unwrap();
-      } else if (!const MapEquality()
-          .equals(newStyle.getBlocksExceptHeader(), parentStyle)) {
+      } else if (!const MapEquality().equals(newStyle.getBlocksExceptHeader(), parentStyle)) {
         _unwrap();
         // Block style now can contain multiple attributes
-        if (newStyle.attributes.keys
-            .any(Attribute.exclusiveBlockKeys.contains)) {
-          parentStyle.removeWhere(
-              (key, attr) => Attribute.exclusiveBlockKeys.contains(key));
+        if (newStyle.attributes.keys.any(Attribute.exclusiveBlockKeys.contains)) {
+          parentStyle.removeWhere((key, attr) => Attribute.exclusiveBlockKeys.contains(key));
         }
-        parentStyle.removeWhere(
-            (key, attr) => newStyle?.attributes.keys.contains(key) ?? false);
+        parentStyle.removeWhere((key, attr) => newStyle?.attributes.keys.contains(key) ?? false);
         final parentStyleToMerge = Style.attr(parentStyle);
         newStyle = newStyle.mergeAll(parentStyleToMerge);
         _applyBlockStyles(newStyle);
