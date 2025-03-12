@@ -47,13 +47,14 @@ class _QuillDropdownButtonState<T> extends State<QuillDropdownButton<T>> {
   void _showMenu() {
     final popupMenuTheme = PopupMenuTheme.of(context);
     final button = context.findRenderObject() as RenderBox;
-    final overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     final position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomLeft(Offset.zero),
-            ancestor: overlay),
+        button.localToGlobal(
+          button.size.bottomLeft(Offset.zero),
+          ancestor: overlay,
+        ),
       ),
       Offset.zero & overlay.size,
     );
@@ -87,7 +88,7 @@ class _QuillDropdownButtonState<T> extends State<QuillDropdownButton<T>> {
           children: [
             widget.child,
             Expanded(child: Container()),
-            const Icon(Icons.arrow_drop_down, size: 15)
+            const Icon(Icons.arrow_drop_down, size: 15),
           ],
         ),
       ),

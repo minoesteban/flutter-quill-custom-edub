@@ -130,5 +130,7 @@ base class Root extends Container<Container<Node?>> {
   Container<Node?> get defaultChild => Line();
 
   @override
-  Delta toDelta() => children.map((child) => child.toDelta()).fold(Delta(), (a, b) => a.concat(b));
+  Delta toDelta() => children
+      .map((child) => child.toDelta())
+      .fold(Delta(), (a, b) => a.concat(b));
 }

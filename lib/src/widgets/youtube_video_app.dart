@@ -6,7 +6,11 @@ import 'package:youtube_player_flutter_quill/youtube_player_flutter_quill.dart';
 import '../../flutter_quill.dart';
 
 class YoutubeVideoApp extends StatefulWidget {
-  const YoutubeVideoApp({required this.videoUrl, required this.context, required this.readOnly});
+  const YoutubeVideoApp({
+    required this.videoUrl,
+    required this.context,
+    required this.readOnly,
+  });
 
   final String videoUrl;
   final BuildContext context;
@@ -26,9 +30,7 @@ class _YoutubeVideoAppState extends State<YoutubeVideoApp> {
     if (videoId != null) {
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-        ),
+        flags: const YoutubePlayerFlags(autoPlay: false),
       );
     }
   }
@@ -40,13 +42,17 @@ class _YoutubeVideoAppState extends State<YoutubeVideoApp> {
       if (widget.readOnly) {
         return RichText(
           text: TextSpan(
-              text: widget.videoUrl,
-              style: defaultStyles.link,
-              recognizer: TapGestureRecognizer()..onTap = () => launch(widget.videoUrl)),
+            text: widget.videoUrl,
+            style: defaultStyles.link,
+            recognizer:
+                TapGestureRecognizer()..onTap = () => launch(widget.videoUrl),
+          ),
         );
       }
 
-      return RichText(text: TextSpan(text: widget.videoUrl, style: defaultStyles.link));
+      return RichText(
+        text: TextSpan(text: widget.videoUrl, style: defaultStyles.link),
+      );
     }
 
     return Container(

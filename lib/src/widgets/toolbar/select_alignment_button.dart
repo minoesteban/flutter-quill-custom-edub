@@ -8,8 +8,12 @@ import '../controller.dart';
 import '../toolbar.dart';
 
 class SelectAlignmentButton extends StatefulWidget {
-  const SelectAlignmentButton({required this.controller, this.iconSize = kDefaultIconSize, this.iconTheme, Key? key})
-    : super(key: key);
+  const SelectAlignmentButton({
+    required this.controller,
+    this.iconSize = kDefaultIconSize,
+    this.iconTheme,
+    Key? key,
+  }) : super(key: key);
 
   final QuillController controller;
   final double iconSize;
@@ -29,7 +33,9 @@ class _SelectAlignmentButtonState extends State<SelectAlignmentButton> {
   void initState() {
     super.initState();
     setState(() {
-      _value = _selectionStyle.attributes[Attribute.align.key] ?? Attribute.leftAlignment;
+      _value =
+          _selectionStyle.attributes[Attribute.align.key] ??
+          Attribute.leftAlignment;
     });
     widget.controller.addListener(_didChangeEditingValue);
   }
@@ -73,16 +79,23 @@ class _SelectAlignmentButtonState extends State<SelectAlignmentButton> {
               highlightElevation: 0,
               elevation: 0,
               visualDensity: VisualDensity.compact,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(2),
+              ),
               fillColor:
                   _valueToText[_value] == _valueString[index]
                       ? widget.iconTheme?.iconSelectedFillColor
-                      : (widget.iconTheme?.iconUnselectedFillColor ?? theme.canvasColor),
+                      : (widget.iconTheme?.iconUnselectedFillColor ??
+                          theme.canvasColor),
               onPressed:
                   () =>
                       _valueAttribute[index] == Attribute.leftAlignment
-                          ? widget.controller.formatSelection(Attribute.clone(Attribute.align, null))
-                          : widget.controller.formatSelection(_valueAttribute[index]),
+                          ? widget.controller.formatSelection(
+                            Attribute.clone(Attribute.align, null),
+                          )
+                          : widget.controller.formatSelection(
+                            _valueAttribute[index],
+                          ),
               child: Icon(
                 _valueString[index] == Attribute.leftAlignment.value
                     ? Icons.format_align_left
@@ -94,8 +107,10 @@ class _SelectAlignmentButtonState extends State<SelectAlignmentButton> {
                 size: widget.iconSize,
                 color:
                     _valueToText[_value] == _valueString[index]
-                        ? (widget.iconTheme?.iconSelectedColor ?? theme.primaryIconTheme.color)
-                        : (widget.iconTheme?.iconUnselectedColor ?? theme.iconTheme.color),
+                        ? (widget.iconTheme?.iconSelectedColor ??
+                            theme.primaryIconTheme.color)
+                        : (widget.iconTheme?.iconUnselectedColor ??
+                            theme.iconTheme.color),
               ),
             ),
           ),
@@ -106,7 +121,9 @@ class _SelectAlignmentButtonState extends State<SelectAlignmentButton> {
 
   void _didChangeEditingValue() {
     setState(() {
-      _value = _selectionStyle.attributes[Attribute.align.key] ?? Attribute.leftAlignment;
+      _value =
+          _selectionStyle.attributes[Attribute.align.key] ??
+          Attribute.leftAlignment;
     });
   }
 
@@ -116,7 +133,9 @@ class _SelectAlignmentButtonState extends State<SelectAlignmentButton> {
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller.removeListener(_didChangeEditingValue);
       widget.controller.addListener(_didChangeEditingValue);
-      _value = _selectionStyle.attributes[Attribute.align.key] ?? Attribute.leftAlignment;
+      _value =
+          _selectionStyle.attributes[Attribute.align.key] ??
+          Attribute.leftAlignment;
     }
   }
 

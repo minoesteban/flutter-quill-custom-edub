@@ -7,7 +7,6 @@ import '../../translations/toolbar.i18n.dart';
 import '../controller.dart';
 import '../link_dialog.dart';
 import '../toolbar.dart';
-import 'quill_icon_button.dart';
 
 class LinkStyleButton extends StatefulWidget {
   const LinkStyleButton({
@@ -66,12 +65,7 @@ class _LinkStyleButtonState extends State<LinkStyleButton> {
       onTap: () async {
         final dynamic tooltip = _toolTipKey.currentState;
         tooltip.ensureTooltipVisible();
-        Future.delayed(
-          const Duration(
-            seconds: 3,
-          ),
-          tooltip.deactivate,
-        );
+        Future.delayed(const Duration(seconds: 3), tooltip.deactivate);
       },
       child: Tooltip(
         key: _toolTipKey,
@@ -83,10 +77,12 @@ class _LinkStyleButtonState extends State<LinkStyleButton> {
           icon: Icon(
             widget.icon ?? Icons.link,
             size: widget.iconSize,
-            color: isEnabled
-                ? (widget.iconTheme?.iconUnselectedColor ??
-                    theme.iconTheme.color)
-                : (widget.iconTheme?.disabledIconColor ?? theme.disabledColor),
+            color:
+                isEnabled
+                    ? (widget.iconTheme?.iconUnselectedColor ??
+                        theme.iconTheme.color)
+                    : (widget.iconTheme?.disabledIconColor ??
+                        theme.disabledColor),
           ),
           fillColor:
               widget.iconTheme?.iconUnselectedFillColor ?? theme.canvasColor,

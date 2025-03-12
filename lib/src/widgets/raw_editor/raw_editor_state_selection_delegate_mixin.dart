@@ -50,14 +50,19 @@ mixin RawEditorStateSelectionDelegateMixin on EditorState
     final expandedRect = Rect.fromCenter(
       center: rect.center,
       width: rect.width,
-      height:
-          max(rect.height, getRenderEditor()!.preferredLineHeight(position)),
+      height: max(
+        rect.height,
+        getRenderEditor()!.preferredLineHeight(position),
+      ),
     );
 
-    additionalOffset = expandedRect.height >= editableSize.height
-        ? editableSize.height / 2 - expandedRect.center.dy
-        : 0.0
-            .clamp(expandedRect.bottom - editableSize.height, expandedRect.top);
+    additionalOffset =
+        expandedRect.height >= editableSize.height
+            ? editableSize.height / 2 - expandedRect.center.dy
+            : 0.0.clamp(
+              expandedRect.bottom - editableSize.height,
+              expandedRect.top,
+            );
     unitOffset = const Offset(0, 1);
 
     // No overscrolling when encountering tall fonts/scripts that extend past
@@ -69,7 +74,9 @@ mixin RawEditorStateSelectionDelegateMixin on EditorState
 
     final offsetDelta = scrollController.offset - targetOffset;
     return RevealedOffset(
-        rect: rect.shift(unitOffset * offsetDelta), offset: targetOffset);
+      rect: rect.shift(unitOffset * offsetDelta),
+      offset: targetOffset,
+    );
   }
 
   @override

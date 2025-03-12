@@ -64,7 +64,10 @@ class RawEditor extends StatefulWidget {
     this.overlays,
   ) : assert(maxHeight == null || maxHeight > 0, 'maxHeight cannot be null'),
       assert(minHeight == null || minHeight >= 0, 'minHeight cannot be null'),
-      assert(maxHeight == null || minHeight == null || maxHeight >= minHeight, 'maxHeight cannot be null'),
+      assert(
+        maxHeight == null || minHeight == null || maxHeight >= minHeight,
+        'maxHeight cannot be null',
+      ),
       showCursor = showCursor ?? true,
       autoScrollToSelection = autoScrollToSelection ?? false,
       super(key: key);
@@ -152,7 +155,11 @@ class RawEditorState extends EditorState
 
     var _doc = widget.controller.document;
     if (_doc.isEmpty() && widget.placeholder != null) {
-      _doc = Document.fromJson(jsonDecode('[{"attributes":{"placeholder":true},"insert":"${widget.placeholder}\\n"}]'));
+      _doc = Document.fromJson(
+        jsonDecode(
+          '[{"attributes":{"placeholder":true},"insert":"${widget.placeholder}\\n"}]',
+        ),
+      );
     }
 
     Widget child = CompositedTransformTarget(
@@ -178,7 +185,9 @@ class RawEditorState extends EditorState
       if (!widget.controller.disableHighlightScrolling) {
         _scrollToSelection();
       }
-      final baselinePadding = EdgeInsets.only(top: _styles!.paragraph!.verticalSpacing.item1);
+      final baselinePadding = EdgeInsets.only(
+        top: _styles!.paragraph!.verticalSpacing.item1,
+      );
       child = BaselineProxy(
         textStyle: _styles!.paragraph!.style,
         padding: baselinePadding,
@@ -218,15 +227,24 @@ class RawEditorState extends EditorState
     final constraints =
         widget.expands
             ? const BoxConstraints.expand()
-            : BoxConstraints(minHeight: widget.minHeight ?? 0.0, maxHeight: widget.maxHeight ?? double.infinity);
+            : BoxConstraints(
+              minHeight: widget.minHeight ?? 0.0,
+              maxHeight: widget.maxHeight ?? double.infinity,
+            );
 
     return QuillStyles(
       data: _styles!,
-      child: MouseRegion(cursor: SystemMouseCursors.text, child: Container(constraints: constraints, child: child)),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.text,
+        child: Container(constraints: constraints, child: child),
+      ),
     );
   }
 
-  void _handleSelectionChanged(TextSelection selection, SelectionChangedCause cause) {
+  void _handleSelectionChanged(
+    TextSelection selection,
+    SelectionChangedCause cause,
+  ) {
     widget.controller.updateSelection(selection, ChangeSource.LOCAL);
 
     _selectionOverlay?.handlesVisible = _shouldShowSelectionHandles();
@@ -267,7 +285,10 @@ class RawEditorState extends EditorState
           styles: _styles,
           enableInteractiveSelection: widget.enableInteractiveSelection,
           hasFocus: _hasFocus,
-          contentPadding: attrs.containsKey(Attribute.codeBlock.key) ? const EdgeInsets.all(16) : null,
+          contentPadding:
+              attrs.containsKey(Attribute.codeBlock.key)
+                  ? const EdgeInsets.all(16)
+                  : null,
           embedBuilder: widget.embedBuilder,
           cursorCont: _cursorCont,
           indentLevelCounts: indentLevelCounts,
@@ -283,7 +304,10 @@ class RawEditorState extends EditorState
     return result;
   }
 
-  EditableTextLine _getEditableTextLineFromNode(Line node, BuildContext context) {
+  EditableTextLine _getEditableTextLineFromNode(
+    Line node,
+    BuildContext context,
+  ) {
     final textLine = TextLine(
       line: node,
       textDirection: _textDirection,
@@ -309,7 +333,10 @@ class RawEditorState extends EditorState
     return editableTextLine;
   }
 
-  Tuple2<double, double> _getVerticalSpacingForLine(Line line, DefaultStyles? defaultStyles) {
+  Tuple2<double, double> _getVerticalSpacingForLine(
+    Line line,
+    DefaultStyles? defaultStyles,
+  ) {
     final attrs = line.style.attributes;
     if (attrs.containsKey(Attribute.header.key)) {
       final int? level = attrs[Attribute.header.key]!.value;
@@ -328,7 +355,10 @@ class RawEditorState extends EditorState
     return defaultStyles!.paragraph!.verticalSpacing;
   }
 
-  Tuple2<double, double> _getVerticalSpacingForBlock(Block node, DefaultStyles? defaultStyles) {
+  Tuple2<double, double> _getVerticalSpacingForBlock(
+    Block node,
+    DefaultStyles? defaultStyles,
+  ) {
     final attrs = node.style.attributes;
     if (attrs.containsKey(Attribute.blockQuote.key)) {
       return defaultStyles!.quote!.verticalSpacing;
@@ -363,7 +393,11 @@ class RawEditorState extends EditorState
       tickerProvider: this,
     );
 
-    _keyboardListener = KeyboardEventHandler(handleCursorMovement, handleShortcut, handleDelete);
+    _keyboardListener = KeyboardEventHandler(
+      handleCursorMovement,
+      handleShortcut,
+      handleDelete,
+    );
 
     if (defaultTargetPlatform == TargetPlatform.windows ||
         defaultTargetPlatform == TargetPlatform.macOS ||
@@ -373,12 +407,13 @@ class RawEditorState extends EditorState
     } else {
       _keyboardVisibilityController = KeyboardVisibilityController();
       _keyboardVisible = _keyboardVisibilityController!.isVisible;
-      _keyboardVisibilitySubscription = _keyboardVisibilityController?.onChange.listen((visible) {
-        _keyboardVisible = visible;
-        if (visible) {
-          _onChangeTextEditingValue();
-        }
-      });
+      _keyboardVisibilitySubscription = _keyboardVisibilityController?.onChange
+          .listen((visible) {
+            _keyboardVisible = visible;
+            if (visible) {
+              _onChangeTextEditingValue();
+            }
+          });
     }
 
     _focusAttachment = widget.focusNode.attach(
@@ -393,7 +428,10 @@ class RawEditorState extends EditorState
     super.didChangeDependencies();
     final parentStyles = QuillStyles.getStyles(context, true);
     final defaultStyles = DefaultStyles.getInstance(context);
-    _styles = (parentStyles != null) ? defaultStyles.merge(parentStyles) : defaultStyles;
+    _styles =
+        (parentStyles != null)
+            ? defaultStyles.merge(parentStyles)
+            : defaultStyles;
 
     if (widget.customStyles != null) {
       _styles = _styles!.merge(widget.customStyles!);
@@ -504,7 +542,10 @@ class RawEditorState extends EditorState
       return;
     }
     _showCaretOnScreen();
-    _cursorCont.startOrStopCursorTimerIfNeeded(_hasFocus, widget.controller.selection);
+    _cursorCont.startOrStopCursorTimerIfNeeded(
+      _hasFocus,
+      widget.controller.selection,
+    );
     if (hasConnection) {
       _cursorCont
         ..stopCursorTimer(resetCharTicks: false)
@@ -559,7 +600,10 @@ class RawEditorState extends EditorState
 
   void _handleFocusChanged() {
     openOrCloseConnection();
-    _cursorCont.startOrStopCursorTimerIfNeeded(_hasFocus, widget.controller.selection);
+    _cursorCont.startOrStopCursorTimerIfNeeded(
+      _hasFocus,
+      widget.controller.selection,
+    );
     _updateOrDisposeSelectionOverlayIfNeeded();
     if (_hasFocus) {
       WidgetsBinding.instance.addObserver(this);
@@ -596,7 +640,10 @@ class RawEditorState extends EditorState
         }
 
         final viewport = RenderAbstractViewport.of(renderEditor);
-        final editorOffset = renderEditor.localToGlobal(const Offset(0, 0), ancestor: viewport);
+        final editorOffset = renderEditor.localToGlobal(
+          const Offset(0, 0),
+          ancestor: viewport,
+        );
         final offsetInViewport = _scrollController.offset + editorOffset.dy;
 
         final offset = renderEditor.getOffsetToRevealCursor(
@@ -632,7 +679,10 @@ class RawEditorState extends EditorState
         }
 
         final viewport = RenderAbstractViewport.of(renderEditor);
-        final editorOffset = renderEditor.localToGlobal(const Offset(0, 0), ancestor: viewport);
+        final editorOffset = renderEditor.localToGlobal(
+          const Offset(0, 0),
+          ancestor: viewport,
+        );
         final offsetInViewport = _scrollController.offset + editorOffset.dy;
 
         final offset = renderEditor.getOffsetToScroll(
@@ -654,7 +704,8 @@ class RawEditorState extends EditorState
 
   @override
   RenderEditor? getRenderEditor() {
-    return widget.controller.editorKey.currentContext?.findRenderObject() as RenderEditor?;
+    return widget.controller.editorKey.currentContext?.findRenderObject()
+        as RenderEditor?;
   }
 
   @override
@@ -694,7 +745,8 @@ class RawEditorState extends EditorState
       final value = textEditingValue;
       final data = await Clipboard.getData(Clipboard.kTextPlain);
       if (data != null) {
-        final length = textEditingValue.selection.end - textEditingValue.selection.start;
+        final length =
+            textEditingValue.selection.end - textEditingValue.selection.start;
         var str = data.text!;
         final codes = data.text!.codeUnits;
         // For clip from editor, it may contain image, a.k.a 65532.
@@ -710,10 +762,17 @@ class RawEditorState extends EditorState
           }
           str = sb.toString();
         }
-        widget.controller.replaceText(value.selection.start, length, str, value.selection);
+        widget.controller.replaceText(
+          value.selection.start,
+          length,
+          str,
+          value.selection,
+        );
         // move cursor to the end of pasted text selection
         widget.controller.updateSelection(
-          TextSelection.collapsed(offset: value.selection.start + data.text!.length),
+          TextSelection.collapsed(
+            offset: value.selection.start + data.text!.length,
+          ),
           ChangeSource.LOCAL,
         );
       }
@@ -725,7 +784,8 @@ class RawEditorState extends EditorState
     if (data == null) {
       return false;
     }
-    return textEditingValue.text.length - value.text.length == data.text!.length;
+    return textEditingValue.text.length - value.text.length ==
+        data.text!.length;
   }
 
   @override
@@ -786,7 +846,10 @@ class RawEditorState extends EditorState
   }
 
   @override
-  void didChangeInputControl(TextInputControl? oldControl, TextInputControl? newControl) {
+  void didChangeInputControl(
+    TextInputControl? oldControl,
+    TextInputControl? newControl,
+  ) {
     // TODO: implement didChangeInputControl
   }
 
@@ -854,7 +917,10 @@ class _Editor extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant RenderEditor renderObject) {
+  void updateRenderObject(
+    BuildContext context,
+    covariant RenderEditor renderObject,
+  ) {
     renderObject
       ..offset = offset
       ..document = document
