@@ -10,8 +10,11 @@ import '../../flutter_quill.dart';
 /// Widget for playing back video
 /// Refer to https://github.com/flutter/plugins/tree/master/packages/video_player/video_player
 class VideoApp extends StatefulWidget {
-  const VideoApp(
-      {required this.videoUrl, required this.context, required this.readOnly});
+  const VideoApp({
+    required this.videoUrl,
+    required this.context,
+    required this.readOnly,
+  });
 
   final String videoUrl;
   final BuildContext context;
@@ -28,15 +31,16 @@ class _VideoAppState extends State<VideoApp> {
   void initState() {
     super.initState();
 
-    _controller = widget.videoUrl.startsWith('http') ||
-            widget.videoUrl.startsWith('https')
-        ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
-        : VideoPlayerController.file(File(widget.videoUrl))
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized,
-        // even before the play button has been pressed.
-        setState(() {});
-      });
+    _controller =
+        widget.videoUrl.startsWith('http') ||
+                  widget.videoUrl.startsWith('https')
+              ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+              : VideoPlayerController.file(File(widget.videoUrl))
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized,
+            // even before the play button has been pressed.
+            setState(() {});
+          });
   }
 
   @override
@@ -46,15 +50,17 @@ class _VideoAppState extends State<VideoApp> {
       if (widget.readOnly) {
         return RichText(
           text: TextSpan(
-              text: widget.videoUrl,
-              style: defaultStyles.link,
-              recognizer: TapGestureRecognizer()
-                ..onTap = () => launch(widget.videoUrl)),
+            text: widget.videoUrl,
+            style: defaultStyles.link,
+            recognizer:
+                TapGestureRecognizer()..onTap = () => launch(widget.videoUrl),
+          ),
         );
       }
 
       return RichText(
-          text: TextSpan(text: widget.videoUrl, style: defaultStyles.link));
+        text: TextSpan(text: widget.videoUrl, style: defaultStyles.link),
+      );
     }
 
     return Container(
@@ -67,22 +73,27 @@ class _VideoAppState extends State<VideoApp> {
                 : _controller.play();
           });
         },
-        child: Stack(alignment: Alignment.center, children: [
-          Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Center(
               child: AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )),
-          _controller.value.isPlaying
-              ? const SizedBox.shrink()
-              : Container(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            ),
+            _controller.value.isPlaying
+                ? const SizedBox.shrink()
+                : Container(
                   color: const Color(0xfff5f5f5),
                   child: const Icon(
                     Icons.play_arrow,
                     size: 60,
                     color: Colors.blueGrey,
-                  ))
-        ]),
+                  ),
+                ),
+          ],
+        ),
       ),
     );
   }

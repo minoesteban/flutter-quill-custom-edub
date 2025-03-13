@@ -17,7 +17,7 @@ import 'node.dart';
 ///
 /// When a line contains an embed, it fully occupies the line, no other embeds
 /// or text nodes are allowed.
-class Line extends Container<Leaf?> {
+base class Line extends Container<Leaf?> {
   @override
   Leaf get defaultChild => Text();
 
@@ -128,8 +128,10 @@ class Line extends Container<Leaf?> {
     final isLineFormat = (index + local == thisLength) && local == 1;
 
     if (isLineFormat) {
-      assert(style.values.every((attr) => attr.scope == AttributeScope.BLOCK),
-          'It is not allowed to apply inline attributes to line itself.');
+      assert(
+        style.values.every((attr) => attr.scope == AttributeScope.BLOCK),
+        'It is not allowed to apply inline attributes to line itself.',
+      );
       _format(style);
     } else {
       // Otherwise forward to children as it's an inline format update.
@@ -209,17 +211,22 @@ class Line extends Container<Leaf?> {
           parentStyle.containsKey(blockStyle.key) &&
           parentStyle.length == 1) {
         _unwrap();
-      } else if (!const MapEquality()
-          .equals(newStyle.getBlocksExceptHeader(), parentStyle)) {
+      } else if (!const MapEquality().equals(
+        newStyle.getBlocksExceptHeader(),
+        parentStyle,
+      )) {
         _unwrap();
         // Block style now can contain multiple attributes
-        if (newStyle.attributes.keys
-            .any(Attribute.exclusiveBlockKeys.contains)) {
+        if (newStyle.attributes.keys.any(
+          Attribute.exclusiveBlockKeys.contains,
+        )) {
           parentStyle.removeWhere(
-              (key, attr) => Attribute.exclusiveBlockKeys.contains(key));
+            (key, attr) => Attribute.exclusiveBlockKeys.contains(key),
+          );
         }
         parentStyle.removeWhere(
-            (key, attr) => newStyle?.attributes.keys.contains(key) ?? false);
+          (key, attr) => newStyle?.attributes.keys.contains(key) ?? false,
+        );
         final parentStyleToMerge = Style.attr(parentStyle);
         newStyle = newStyle.mergeAll(parentStyleToMerge);
         _applyBlockStyles(newStyle);

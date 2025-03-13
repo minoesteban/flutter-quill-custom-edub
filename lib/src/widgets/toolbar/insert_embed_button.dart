@@ -4,7 +4,6 @@ import '../../models/documents/nodes/embed.dart';
 import '../../models/themes/quill_icon_theme.dart';
 import '../controller.dart';
 import '../toolbar.dart';
-import 'quill_icon_button.dart';
 
 class InsertEmbedButton extends StatelessWidget {
   const InsertEmbedButton({
@@ -34,11 +33,7 @@ class InsertEmbedButton extends StatelessWidget {
       highlightElevation: 0,
       hoverElevation: 0,
       size: iconSize * kIconButtonFactor,
-      icon: Icon(
-        icon,
-        size: iconSize,
-        color: iconColor,
-      ),
+      icon: Icon(icon, size: iconSize, color: iconColor),
       fillColor: iconFillColor,
       onPressed: () {
         final index = controller.selection.baseOffset;

@@ -16,8 +16,13 @@ extension _LogicalKeyboardKeyCaseExt on LogicalKeyboardKey {
 
 enum InputShortcut { CUT, COPY, PASTE, SELECT_ALL, UNDO, REDO }
 
-typedef CursorMoveCallback = void Function(
-    LogicalKeyboardKey key, bool wordModifier, bool lineModifier, bool shift);
+typedef CursorMoveCallback =
+    void Function(
+      LogicalKeyboardKey key,
+      bool wordModifier,
+      bool lineModifier,
+      bool shift,
+    );
 typedef InputShortcutCallback = void Function(InputShortcut? shortcut);
 typedef OnDeleteCallback = void Function(bool forward);
 
@@ -59,10 +64,10 @@ class KeyboardEventHandler {
 
   static final Set<LogicalKeyboardKey> _macOsModifierKeys =
       <LogicalKeyboardKey>{
-    LogicalKeyboardKey.shift,
-    LogicalKeyboardKey.meta,
-    LogicalKeyboardKey.alt,
-  };
+        LogicalKeyboardKey.shift,
+        LogicalKeyboardKey.meta,
+        LogicalKeyboardKey.alt,
+      };
 
   static final Set<LogicalKeyboardKey> _interestingKeys = <LogicalKeyboardKey>{
     ..._modifierKeys,
@@ -87,8 +92,9 @@ class KeyboardEventHandler {
       return KeyEventResult.ignored;
     }
 
-    final keysPressed =
-        LogicalKeyboardKey.collapseSynonyms(RawKeyboard.instance.keysPressed);
+    final keysPressed = LogicalKeyboardKey.collapseSynonyms(
+      RawKeyboard.instance.keysPressed,
+    );
     final key = event.logicalKey;
     final isMacOS = event.data is RawKeyEventDataMacOs;
     if (!_nonModifierKeys.contains(key) ||
@@ -105,15 +111,17 @@ class KeyboardEventHandler {
 
     if (_moveKeys.contains(key)) {
       onCursorMove(
-          key,
-          isMacOS ? event.isAltPressed : event.isControlPressed,
-          isMacOS ? event.isMetaPressed : event.isAltPressed,
-          event.isShiftPressed);
+        key,
+        isMacOS ? event.isAltPressed : event.isControlPressed,
+        isMacOS ? event.isMetaPressed : event.isAltPressed,
+        event.isShiftPressed,
+      );
     } else if (isShortcutModifierPressed && (_shortcutKeys.contains(key))) {
       if (key == LogicalKeyboardKey.keyZ ||
           key == LogicalKeyboardKey.keyZ.toUpperCase()) {
         onShortcut(
-            event.isShiftPressed ? InputShortcut.REDO : InputShortcut.UNDO);
+          event.isShiftPressed ? InputShortcut.REDO : InputShortcut.UNDO,
+        );
       } else {
         onShortcut(_keyToShortcut[key]);
       }

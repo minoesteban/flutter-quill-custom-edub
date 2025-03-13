@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_quill.dart';
-import 'quill_icon_button.dart';
 
 class IndentButton extends StatefulWidget {
   const IndentButton({
@@ -40,9 +39,10 @@ class _IndentButtonState extends State<IndentButton> {
       icon: Icon(widget.icon, size: widget.iconSize, color: iconColor),
       fillColor: iconFillColor,
       onPressed: () {
-        final indent = widget.controller
-            .getSelectionStyle()
-            .attributes[Attribute.indent.key];
+        final indent =
+            widget.controller.getSelectionStyle().attributes[Attribute
+                .indent
+                .key];
         if (indent == null) {
           if (widget.isIncrease) {
             widget.controller.formatSelection(Attribute.indentL1);
@@ -50,17 +50,20 @@ class _IndentButtonState extends State<IndentButton> {
           return;
         }
         if (indent.value == 1 && !widget.isIncrease) {
-          widget.controller
-              .formatSelection(Attribute.clone(Attribute.indentL1, null));
+          widget.controller.formatSelection(
+            Attribute.clone(Attribute.indentL1, null),
+          );
           return;
         }
         if (widget.isIncrease) {
-          widget.controller
-              .formatSelection(Attribute.getIndentLevel(indent.value + 1));
+          widget.controller.formatSelection(
+            Attribute.getIndentLevel(indent.value + 1),
+          );
           return;
         }
-        widget.controller
-            .formatSelection(Attribute.getIndentLevel(indent.value - 1));
+        widget.controller.formatSelection(
+          Attribute.getIndentLevel(indent.value - 1),
+        );
       },
     );
   }

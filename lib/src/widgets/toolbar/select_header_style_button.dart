@@ -53,7 +53,7 @@ class _SelectHeaderStyleButtonState extends State<SelectHeaderStyleButton> {
       Attribute.header,
       Attribute.h1,
       Attribute.h2,
-      Attribute.h3
+      Attribute.h3,
     ];
     final _valueString = <String>['N', 'H1', 'H2', 'H3'];
 
@@ -79,22 +79,25 @@ class _SelectHeaderStyleButtonState extends State<SelectHeaderStyleButton> {
               elevation: 0,
               visualDensity: VisualDensity.compact,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2)),
-              fillColor: _valueToText[_value] == _valueString[index]
-                  ? (widget.iconTheme?.iconSelectedFillColor ??
-                      theme.toggleableActiveColor)
-                  : (widget.iconTheme?.iconUnselectedFillColor ??
-                      theme.canvasColor),
-              onPressed: () =>
-                  widget.controller.formatSelection(_valueAttribute[index]),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              fillColor:
+                  _valueToText[_value] == _valueString[index]
+                      ? widget.iconTheme?.iconSelectedFillColor
+                      : (widget.iconTheme?.iconUnselectedFillColor ??
+                          theme.canvasColor),
+              onPressed:
+                  () =>
+                      widget.controller.formatSelection(_valueAttribute[index]),
               child: Text(
                 _valueString[index],
                 style: style.copyWith(
-                  color: _valueToText[_value] == _valueString[index]
-                      ? (widget.iconTheme?.iconSelectedColor ??
-                          theme.primaryIconTheme.color)
-                      : (widget.iconTheme?.iconUnselectedColor ??
-                          theme.iconTheme.color),
+                  color:
+                      _valueToText[_value] == _valueString[index]
+                          ? (widget.iconTheme?.iconSelectedColor ??
+                              theme.primaryIconTheme.color)
+                          : (widget.iconTheme?.iconUnselectedColor ??
+                              theme.iconTheme.color),
                 ),
               ),
             ),

@@ -7,7 +7,7 @@ import 'line.dart';
 import 'node.dart';
 
 /// A leaf in Quill document tree.
-abstract class Leaf extends Node {
+abstract base class Leaf extends Node {
   /// Creates a new [Leaf] with specified [data].
   factory Leaf(Object data) {
     if (data is Embeddable) {
@@ -27,8 +27,10 @@ abstract class Leaf extends Node {
 
   @override
   void applyStyle(Style value) {
-    assert(value.isInline || value.isIgnored || value.isEmpty,
-        'Unable to apply Style to leaf: $value');
+    assert(
+      value.isInline || value.isIgnored || value.isEmpty,
+      'Unable to apply Style to leaf: $value',
+    );
     super.applyStyle(value);
   }
 
@@ -188,7 +190,8 @@ abstract class Leaf extends Node {
   /// if provided [index] is `0`.
   Leaf _isolate(int index, int length) {
     assert(
-        index >= 0 && index < this.length && (index + length <= this.length));
+      index >= 0 && index < this.length && (index + length <= this.length),
+    );
     final target = splitAt(index)!..splitAt(length);
     return target;
   }
@@ -205,10 +208,8 @@ abstract class Leaf extends Node {
 ///
 ///   * [Embed], a leaf node representing an embeddable object.
 ///   * [Line], a node representing a line of text.
-class Text extends Leaf {
-  Text([String text = ''])
-      : assert(!text.contains('\n')),
-        super.val(text);
+base class Text extends Leaf {
+  Text([String text = '']) : assert(!text.contains('\n')), super.val(text);
 
   @override
   Node newInstance() => Text(value);
@@ -234,7 +235,7 @@ class Text extends Leaf {
 /// necessarily mean the embed will look according to that style. For instance,
 /// applying "bold" style to an image gives no effect, while adding a "link" to
 /// an image actually makes the image react to user's action.
-class Embed extends Leaf {
+base class Embed extends Leaf {
   Embed(Embeddable data) : super.val(data);
 
   static const kObjectReplacementCharacter = '\uFFFC';

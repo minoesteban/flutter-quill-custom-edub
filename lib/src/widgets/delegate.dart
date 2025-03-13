@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import '../../flutter_quill.dart';
 
-import '../models/documents/nodes/leaf.dart';
-import 'editor.dart';
+import '../../flutter_quill.dart';
 import 'text_selection.dart';
 
-typedef EmbedBuilder = Widget Function(
-    BuildContext context, Embed node, bool readOnly);
+typedef EmbedBuilder =
+    Widget Function(BuildContext context, Embed node, bool readOnly);
 
 typedef CustomStyleBuilder = TextStyle Function(Attribute attribute);
 
@@ -39,7 +36,8 @@ class EditorTextSelectionGestureDetectorBuilder {
     getRenderEditor()!.handleTapDown(details);
 
     final kind = details.kind;
-    shouldShowSelectionToolbar = kind == null ||
+    shouldShowSelectionToolbar =
+        kind == null ||
         kind == PointerDeviceKind.touch ||
         kind == PointerDeviceKind.stylus;
   }
@@ -120,12 +118,15 @@ class EditorTextSelectionGestureDetectorBuilder {
   }
 
   void onDragSelectionUpdate(
-      DragStartDetails startDetails, DragUpdateDetails updateDetails) {
-    getRenderEditor()!.selectPositionAt(
-      startDetails.globalPosition,
-      updateDetails.globalPosition,
-      SelectionChangedCause.drag,
-    );
+    // DragStartDetails startDetails,
+    DragUpdateDetails updateDetails,
+  ) {
+    // TODO: EM - Incompatible change - need to change RenderEditor logic
+    // getRenderEditor()!.selectPositionAt(
+    //   // startDetails.globalPosition,
+    //   updateDetails.globalPosition,
+    //   SelectionChangedCause.drag,
+    // );
   }
 
   void onDragSelectionEnd(DragEndDetails details) {}

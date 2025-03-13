@@ -15,7 +15,7 @@ import 'line.dart';
 /// which provides absolute offset of this node within the document.
 ///
 /// The current parent node is exposed by the [parent] property.
-abstract class Node extends LinkedListEntry<Node> {
+abstract base class Node extends LinkedListEntry<Node> {
   /// Current parent of this node. May be null if this node is not mounted.
   Container? parent;
 
@@ -100,7 +100,9 @@ abstract class Node extends LinkedListEntry<Node> {
     super.unlink();
   }
 
-  void adjust() {/* no-op */}
+  void adjust() {
+    /* no-op */
+  }
 
   /// abstract methods begin
 
@@ -120,7 +122,7 @@ abstract class Node extends LinkedListEntry<Node> {
 }
 
 /// Root node of document tree.
-class Root extends Container<Container<Node?>> {
+base class Root extends Container<Container<Node?>> {
   @override
   Node newInstance() => Root();
 
